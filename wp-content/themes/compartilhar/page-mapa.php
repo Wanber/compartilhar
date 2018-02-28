@@ -57,8 +57,14 @@ endwhile;
         }
 
         .painel .header h3 {
+
             font-weight: 100;
             color: white;
+        }
+
+        .painel .header h3 p {
+            margin-top: 7px;
+            margin-bottom: 10px;
         }
 
         .painel .rodape {
@@ -72,6 +78,15 @@ endwhile;
             font-weight: 100;
         }
 
+        .titulo-empresa img {
+            width: 26px;
+            height: 26px;
+        }
+
+        .titulo-empresa span {
+            display: none;
+        }
+
         #cadastrarEmpresa {
             position: fixed;
             bottom: 55px;
@@ -80,16 +95,47 @@ endwhile;
             height: 50px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.88rem;
+            font-size: 1.87rem;
             padding: 0 0 5px 0;
         }
 
-        .tooltip .tooltip-inner {
-            background-color: green;
+        .ui-accordion .ui-accordion-header {
+            display: block;
+            cursor: pointer;
+            position: relative;
+            margin: 2px 0 0 0;
+            padding: .5em .5em .5em .7em;
+            font-size: 100%;
         }
 
-        .tooltip .arrow::before {
-            border-left-color: green;
+        .ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+            border-top-right-radius: 3px;
+        }
+
+        .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+            border-top-left-radius: 3px;
+        }
+
+        .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+            border: none;
+            background: #314050;
+        }
+
+        .ui-accordion .ui-accordion-header {
+            outline: none;
+        }
+
+        .ui-accordion .ui-accordion-content {
+            padding: 1em 1.8em .1em 1.8em;
+            background: #ececec;
+        }
+
+        .ui-accordion .ui-accordion-content p {
+            cursor: pointer;
+        }
+
+        .ui-accordion .ui-accordion-content p:hover {
+            color: rgb(47, 93, 112);
         }
     </style>
 
@@ -103,10 +149,13 @@ endwhile;
         <div id="accordion">
 
             <?php foreach ($empresas as $tipo_empresa => $item) : ?>
-                <h3><?php echo ucfirst($tipo_empresa) ?></h3>
+                <h3 class="titulo-empresa">
+                    <img src="<?php echo get_template_directory_uri() . '/images/map-icons/' . $tipo_empresa . '.png' ?>"/>
+                    <?php echo ucfirst($tipo_empresa) ?>
+                </h3>
                 <div>
                     <?php foreach ($item as $empresa) : ?>
-                        <p onclick="openFeature('<?php echo sanitize_file_name($empresa['nome']) . '-' . $empresa['lat'] . $empresa['lng'] ?>')"><?php echo $empresa['nome'] ?></p>
+                        <p onclick="openMarker('<?php echo sanitize_file_name($empresa['nome']) . '-' . $empresa['lat'] . $empresa['lng'] ?>')"><?php echo $empresa['nome'] ?></p>
                     <?php endforeach; ?>
                 </div>
             <?php endforeach; ?>
@@ -152,9 +201,12 @@ endwhile;
 
         function initMap() {
 
-            var valeDoAco = new google.maps.LatLng(-19.50073310865667, -42.58720278739929);
+            var valeDoAco = new google.maps.LatLng(-19.5106789, -42.59246375);
+            var ipatinga = new google.maps.LatLng(-19.4707617, -42.5480125);
+            var timoteo = new google.maps.LatLng(-19.5815631, -42.64752);
+            var c_fabriciano = new google.maps.LatLng(-19.5189968, -42.628205);
 
-            var features = [
+            var pins = [
                 <?php foreach ($empresas as $tipo_empresa => $item) : ?>
                 <?php foreach ($item as $empresa) : ?>
                 {
@@ -173,35 +225,64 @@ endwhile;
                 <?php endforeach; ?>
             ];
 
+            var circles = [
+                {
+                    strokeColor: '#ff8097',
+                    strokeOpacity: 0.05,
+                    strokeWeight: 2,
+                    fillColor: '#ff1e20',
+                    fillOpacity: 0.1,
+                    radius: 1500,
+                    coords: ipatinga
+                },
+                {
+                    strokeColor: '#3e8eff',
+                    strokeOpacity: 0.05,
+                    strokeWeight: 2,
+                    fillColor: '#1f1bff',
+                    fillOpacity: 0.1,
+                    radius: 1200,
+                    coords: c_fabriciano
+                },
+                {
+                    strokeColor: '#ff62ec',
+                    strokeOpacity: 0.05,
+                    strokeWeight: 2,
+                    fillColor: '#ff00d1',
+                    fillOpacity: 0.1,
+                    radius: 400,
+                    coords: timoteo
+                }
+            ];
+
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 13,
                 center: valeDoAco,
                 mapTypeId: 'roadmap'
             });
 
-            features.forEach(function (feature) {
+            pins.forEach(function (pin) {
                 var marker = new google.maps.Marker({
-                    position: feature.cords,
-                    icon: '<?php echo get_template_directory_uri() . '/images/map-icons/' ?>' + feature.tipo + '.png',
-                    title: feature.titulo,
-                    alias: feature.alias,
+                    position: pin.cords,
+                    icon: '<?php echo get_template_directory_uri() . '/images/map-icons/' ?>' + pin.tipo + '.png',
+                    title: pin.titulo,
+                    alias: pin.alias,
                     animation: google.maps.Animation.DROP,
-                    //animation: google.maps.Animation.BOUNCE, //para pular
                     map: map
                 });
 
                 var boxContent = '';
 
                 boxContent += '<div style="float: left; max-width: 300px">';
-                boxContent += '<h4>' + feature.titulo + '</h4>';
-                boxContent += '<div>' + feature.descricao + '</div>';
+                boxContent += '<h4>' + pin.titulo + '</h4>';
+                boxContent += '<div>' + pin.descricao + '</div>';
                 boxContent += '<p>';
-                boxContent += '<br/>' + feature.telefone + '<br/>' + feature.email + '<br/>' + feature.endereco;
+                boxContent += '<br/>' + pin.telefone + '<br/>' + pin.email + '<br/>' + pin.endereco;
                 boxContent += '</p>';
-                if (feature.site != null)
-                    boxContent += '<br/><a target="_blank" href="' + feature.site + '">' + feature.site + '</a>'
+                if (pin.site != null)
+                    boxContent += '<br/><a target="_blank" href="' + pin.site + '">' + pin.site + '</a>'
                 boxContent += '</div>';
-                boxContent += '<div style="float: right; width: 180px; height: 180px; background: url(' + feature.logo + ') no-repeat center center;"></div>';
+                boxContent += '<div style="float: right; width: 180px; height: 180px; background: url(' + pin.logo + ') no-repeat center center;"></div>';
 
                 var infowindow = new google.maps.InfoWindow({
                     content: boxContent
@@ -215,16 +296,30 @@ endwhile;
                     infowindow.close();
                 });
 
-                if (feature.site != null)
+                if (pin.site != null)
                     marker.addListener('click', function () {
-                        window.open(feature.site, '_blank');
+                        window.open(pin.site, '_blank');
                     });
 
                 markers.push({info: marker, infowindow: infowindow});
             });
+
+            circles.forEach(function (circle) {
+                new google.maps.Circle({
+                    strokeColor: circle.strokeColor,
+                    strokeOpacity: circle.strokeOpacity,
+                    strokeWeight: circle.strokeWeight,
+                    fillColor: circle.fillColor,
+                    fillOpacity: circle.fillOpacity,
+                    center: circle.coords,
+                    radius: Math.sqrt(circle.radius) * 100,
+                    map: map
+                });
+            });
+
         }
 
-        function openFeature(alias) {
+        function openMarker(alias) {
 
             markers.forEach(function (marker) {
                 if (marker.info.alias === alias) {
