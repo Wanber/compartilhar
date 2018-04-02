@@ -1,5 +1,7 @@
 <?php
 
+define('THEME_DOMAIN_NAME', 'vda_compartilhar');
+
 global $actual_link;
 $actual_link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
@@ -190,7 +192,7 @@ function custom_post_types()
     $args_empresas = [
         'label' => __('Empresas', 'empresas'),
         'labels' => $empresas_labels,
-        'menu_icon' => 'dashicons-welcome-learn-more',
+        'menu_icon' => 'dashicons-location-alt',
         'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'revisions', 'page-attributes'],
         'capability_type' => 'post',
         'taxonomies' => [],
@@ -646,7 +648,7 @@ add_action('wp_enqueue_scripts', function () {
 
     //wp_enqueue_style('webfont-loader', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js', false, null, 'all');
     wp_enqueue_style('bootstrap', get_template_directory_uri() . '/libs/bootstrap/dist/css/bootstrap.min.css', false, NULL, 'all');
-    //wp_enqueue_style('font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', false, NULL, 'all');
+    wp_enqueue_style('font-awesome', 'https://use.fontawesome.com/releases/v5.0.8/css/all.css', false, NULL, 'all');
     //wp_enqueue_style('font-awesome', get_template_directory_uri().'/libs/font-awesome-4.7.0/css/font-awesome.min.css', false, null, 'all');
     //wp_enqueue_style('font-Titillium', 'https://fonts.googleapis.com/css?family=Titillium+Web:400,500,700', false, null, 'all');
     //wp_enqueue_style('font-Poppins', 'https://fonts.googleapis.com/css?family=Poppins:400,500,600,700', false, null, 'all');

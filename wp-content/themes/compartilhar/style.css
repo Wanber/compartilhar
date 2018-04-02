@@ -10,3 +10,11 @@ License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: compartilhar, vale do aço, comunidade
 */
+
+.sec-comunidade {
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffc113+62,ffc113+62,ffc113+62,ffc113+62&0+61,1+62 */
+    background: -moz-linear-gradient(left, rgba(255,193,19,0) 61%, rgba(255,193,19,1) 62%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(left, rgba(255,193,19,0) 61%,rgba(255,193,19,1) 62%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, rgba(255,193,19,0) 61%,rgba(255,193,19,1) 62%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffc113', endColorstr='#ffc113',GradientType=1 ); /* IE6-9 */
+}

@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php get_header('mapa'); ?>
 
 <?php $the_query = new WP_Query(array('post_type' => 'empresas')); ?>
 <?php $empresas = [] ?>
@@ -10,7 +10,7 @@ while ($the_query->have_posts()) : $the_query->the_post();
 
     $item = [];
     $item['nome'] = get_the_title();
-    $item['descricao'] = $fields['descricao'];
+    $item['descricao'] = preg_replace("/\r\n|\r|\n/", '<br/>', $fields['descricao']);
     $item['telefone'] = $fields['telefone'];
     $item['telefone'] = $fields['telefone'];
     $item['email'] = $fields['email'];
